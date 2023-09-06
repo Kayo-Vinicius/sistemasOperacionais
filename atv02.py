@@ -1,7 +1,7 @@
 import threading
 import time
 
-# Variável de controle para verificar se o tempo limite foi atingido
+# Verifica se o tempo limite foi atingido
 tempoLimite = False
 
 # Função que será executada em uma thread
@@ -9,7 +9,6 @@ def task1():
     global tempoLimite
     print("Inicio da Tarefa 1")
     for _ in range(5):
-        # Verifica se o tempo limite foi atingido
         if tempoLimite:
             print("A Tarefa 1 foi interrompida devido ao tempo limite")
             return
@@ -22,7 +21,6 @@ def task2():
     global tempoLimite
     print("Inicio da Tarefa 2")
     for _ in range(5):
-        # Verifica se o tempo limite foi atingido
         if tempoLimite:
             print("A Tarefa 2 foi interrompida devido ao tempo limite")
             return
