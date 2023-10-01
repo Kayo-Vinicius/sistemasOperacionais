@@ -1,57 +1,59 @@
-
 import threading
 import time
 
-# Variável compartilhada
-vez = 0
-ambos_na_regiao_critica = False
-semaforo = threading.Semaphore(1)
+vez = 0  # trava
 
-# Função que será executada em uma thread
+#Função que será executada em uma thread
 def processoA():
-    global vez, ambos_na_regiao_critica
+    global vez
     for _ in range(2):
         print("Inicio do Processo A")
-        vez = 0
-        # Região crítica
-        with semaforo:
-            for _ in range(3):
-                print("Regiao Critica de A")
-            if vez == 1:
-                ambos_na_regiao_critica = True
-        if ambos_na_regiao_critica:
-            print("AMBOS OS PROCESSOS ESTAO NA REGIAO CRITICA")
-        time.sleep(1)
-        vez = 1
-        ambos_na_regiao_critica = False
+        while vez != 0:
+            print("Processo A em Espera Ocupada")
+        vez = 1  #Mudando o valor da variavel vez antes de entrar na região crítica
 
-# Outra função que será executada em outra thread
+        #regiao critica
+        for _ in range(3):
+            print("Regiao Critica de A")
+            # time.sleep(1)
+
+        vez = 0 #Mudando o valor da variavel vez depois de sair da região crítica
+        
+
+        # Região não crítica
+        for _ in range(3):
+            print("Regiao NAO Critica de A")
+            time.sleep(1)
+
 def processoB():
-    global vez, ambos_na_regiao_critica
+    global vez
     for _ in range(2):
         print("Inicio do Processo B")
-        vez = 1
-        # Região crítica
-        with semaforo:
-            for _ in range(3):
-                print("Regiao Critica de B")
-            if vez == 0:
-                ambos_na_regiao_critica = True
-        if ambos_na_regiao_critica:
-            print("AMBOS OS PROCESSOS ESTAO NA REGIAO CRITICA")
-        time.sleep(1)
-        vez = 0
-        ambos_na_regiao_critica = False
+        while vez != 1:
+            print("Processo B em Espera Ocupada")
+        vez = 0   #Mudando o valor da variavel vez antes de entrar na região crítica
 
-# Criação das threads
-thread1 = threading.Thread(target = processoA)
-thread2 = threading.Thread(target = processoB)
+        #regiao critica
+        for _ in range(3):
+            print("Regiao Critica de B")
+            time.sleep(1)
 
-# Início das threads
+        vez = 1 #Mudando o valor da variavel vez depois de sair da região crítica
+
+        #regiao nao critica
+        for _ in range(3):
+            print("Regiao NAO Critica de B")
+            time.sleep(1)
+
+#Criação das threads
+thread1 = threading.Thread(target=processoA)
+thread2 = threading.Thread(target=processoB)
+
+#Início das threads
 thread1.start()
 thread2.start()
 
-# Espera pelo término de ambas as threads
+#Espera pelo término de ambas as threads
 thread1.join()
 thread2.join()
 
